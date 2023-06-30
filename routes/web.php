@@ -153,6 +153,11 @@ Route::group(['middleware' => ['auth', 'multi-company-select', 'email_verified']
     Route::get('clients/import', [ClientController::class, 'importClient'])->name('clients.import');
     Route::post('clients/import', [ClientController::class, 'importStore'])->name('clients.import.store');
     Route::post('clients/import/process', [ClientController::class, 'importProcess'])->name('clients.import.process');
+
+    Route::get('proposals/import', [ProposalController::class, 'importProposal'])->name('proposals.import');
+    Route::post('proposals/import', [ProposalController::class, 'importStore'])->name('proposals.import.store');
+    Route::post('proposals/import/process', [ProposalController::class, 'importProcess'])->name('proposals.import.process');
+
     Route::resource('clients', ClientController::class);
     Route::get('clients/finance-count/{id}', [ClientController::class, 'financeCount'])->name('clients.finance_count');
 

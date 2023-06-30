@@ -22,9 +22,15 @@ use App\Models\ProposalTemplateItem;
 use App\DataTables\ProposalDataTable;
 use App\Models\ProposalTemplateItemImage;
 use App\Http\Requests\Proposal\StoreRequest;
+use App\Http\Requests\Admin\Employee\ImportRequest;
+use App\Http\Requests\Admin\Employee\ImportProcessRequest;
+use App\Imports\ProposalImport;
+use App\Jobs\ImportProposalJob;
+use App\Traits\ImportExcel;
 
 class ProposalController extends AccountBaseController
 {
+    use ImportExcel;
 
     public function __construct()
     {
@@ -474,6 +480,41 @@ class ProposalController extends AccountBaseController
         $view = view('invoices.ajax.add_item', $this->data)->render();
 
         return Reply::dataOnly(['status' => 'success', 'view' => $view]);
+    }
+
+    public function importProposal()
+    {
+        $this->pageTitle = __('app.importExcel') . ' ' . __('app.proposal');
+
+        // $addPermission = user()->permission('add_proposals');
+        // abort_403(!in_array($addPermission, ['all', 'added', 'both']));
+
+
+        if (request()->ajax()) {
+            $html = view('proposals.ajax.import', $this->data)->render();
+
+            return Reply::dataOnly(['status' => 'success', 'html' => $html, 'title' => $this->pageTitle]);
+        }
+
+        $this->view = 'proposals.ajax.import';
+
+        return view('proposals.create', $this->data);
+    }
+
+    public function importStore(ImportRequest $request)
+    {
+        $this->importFileProcess($request, ProposalImport::class);
+
+        $view = view('proposals.ajax.import_progress', $this->data)->render();
+
+        return Reply::successWithData(__('messages.importUploadSuccess'), ['view' => $view]);
+    }
+
+    public function importProcess(ImportProcessRequest $request)
+    {
+        $batch = $this->importJobProcess($request, ProposalImport::class, ImportProposalJob::class);
+
+        return Reply::successWithData(__('messages.importProcessStart'), ['batch' => $batch]);
     }
 
 }

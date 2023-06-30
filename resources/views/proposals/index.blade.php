@@ -137,13 +137,16 @@ $addProposalTemplatePermission = user()->permission('manage_proposal_template');
                 @endif
 
 				<!-- Add Task import Buttons Start -->
-				<div id="table-actions-import" class="flex-grow-1 align-items-center mb-2 mb-lg-0 mb-md-0">
-					<form method="post" action="{{ route('proposalImportFiles') }}" name="proposal_import" enctype='multipart/form-data'>
+				 <div id="table-actions-import" class="flex-grow-1 align-items-center mb-2 mb-lg-0 mb-md-0">
+					<!-- <form method="post" action="{{ route('proposalImportFiles') }}" name="proposal_import" enctype='multipart/form-data'>
 						@csrf
 						<label><i class="fa fa-file-upload mr-1"></i>Import<input type="file" name="import" class="import" /></label>
 						<input type="submit" name="submit" value="submit" class="submit" style="display:none;" />
-					</form>
-				</div>
+					</form> -->
+					<x-forms.link-secondary :link="route('clients.import')" class="mr-3 float-left mb-2 mb-lg-0 mb-md-0 d-sm-bloc" icon="file-upload">
+						@lang('app.importExcel')
+					</x-forms.link-secondary>
+				</div> 
 				<!-- Add Task import Buttons End -->
 				
                 @if ($addProposalTemplatePermission == 'all'  || $addProposalTemplatePermission == 'added')
